@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div align='center'>
+    <h1 style="color:blue">GREYATOM IDE SIGN IN</h1>
+      <div style="color:red" id="msg"></div><br>
+      <div>Username : <input type="text" name="userName" id="userName"></div>
+      <div style="margin-top:5px">Password : &nbsp;<input type="text" name="pwd" id="pwd"></div>
+      <br>
+      <input type="button" onclick="submit()" value="Login"/>
+  </div>
+<script>
+function submit() {
+    var userName = document.getElementById("userName").value;
+    var pwd = document.getElementById("pwd").value;
+    console.log(userName, pwd);
+    if(userName == 'admin' && pwd =='admin'){
+      console.log('redirect');
+      window.location = "/signin_success?ide_token=64d7e0b443d4d6f6fcaaf16da12242f7899a9509bf2233319b575c1592cc38e5";
+    }else {
+      document.getElementById("msg").innerHTML = "Invalid Username and Password";
+    }
+}
+</script>
+</body>
+</html>
