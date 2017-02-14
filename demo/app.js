@@ -56,16 +56,16 @@ function getTerm(token) {
 
 /*
 ##########xterm over WebSocket###############
-##########do not edit code below if you are not sure & know what you are doing ###############
+##########Do not edit code below if you are not sure & know what you are doing ###############
 */
-
 app.ws('/terminals/:pid', function (ws, req) {
   getTerm(req.params.pid)
     .then(user_info => {
+      console.log(user_info);
       if(terminals[req.params.pid]){
         var term = terminals[req.params.pid];
       }else {
-        var term = pty.spawn('ssh', ["-i", "/Users/pradeepjaiswar/workspace/greyatom/server/xterm-server/demo/githubdemo.pem", "ec2-user@35.154.96.42"], {
+        var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
           name: 'xterm-color',
           cwd: process.env.PWD,
           env: process.env
