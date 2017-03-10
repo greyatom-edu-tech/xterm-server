@@ -38,7 +38,7 @@ var terminals = ''; //global terminals
 function getTerm(token) {
     return new Promise((resolve, reject) => {
       return http.get({
-          host: '35.154.96.42',
+          host: '35.154.189.94',
           port : 7000,
           path: '/api/v1/users/me?token=' + token
       }, function(response) {
