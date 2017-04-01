@@ -39,7 +39,7 @@ function createTerminal() {
       rows = initialGeometry.rows;
 
 
-  socketURL += '522a09afd24758f8a63c8661c8d532647e1a5ead';
+  socketURL += '10927f8a9802f5f6d99248129786e60e627bf022';
   console.log('socketURL', socketURL);
   socket = new WebSocket(socketURL);
   // socket = new WebSocket("ws://0.0.0.0:3000/terminals/64d7e0b443d4d6f6fcaaf16da12242f7899a9509bf2233319b575c1592cc38e5");
