@@ -66,7 +66,7 @@ app.ws('/terminals/:pid', function (ws, req) {
         var term = terminals[req.params.pid];
       }else {
         // var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
-        var term = pty.spawn('sudo', ['su','-',user_info.username], {
+        var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
           name: 'xterm-color',
           cwd: process.env.PWD,
           env: process.env
