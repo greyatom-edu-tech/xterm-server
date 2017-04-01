@@ -38,9 +38,9 @@ var terminals = ''; //global terminals
 function getTerm(token) {
     return new Promise((resolve, reject) => {
       return http.get({
-          host: '35.154.96.42',
-          port : 7000,
-          path: '/api/v1/users/me?token=' + token
+          host: 'api.greyatom.com',
+          path: '/v1/users/' + token,
+          headers: {'access-token': token}
       }, function(response) {
           // Continuously update stream with data
           var body = '';
@@ -65,7 +65,8 @@ app.ws('/terminals/:pid', function (ws, req) {
       if(terminals[req.params.pid]){
         var term = terminals[req.params.pid];
       }else {
-        var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
+        // var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
+        var term = pty.spawn('sudo', ['su','-',user_info.username], {
           name: 'xterm-color',
           cwd: process.env.PWD,
           env: process.env
