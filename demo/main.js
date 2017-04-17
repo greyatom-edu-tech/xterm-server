@@ -39,10 +39,9 @@ function createTerminal() {
       rows = initialGeometry.rows;
 
 
-  socketURL += '10927f8a9802f5f6d99248129786e60e627bf022';
+  socketURL += '47494668c9d07a60a51570a2104546e523da8f02';
   console.log('socketURL', socketURL);
   socket = new WebSocket(socketURL);
-  // socket = new WebSocket("ws://0.0.0.0:3000/terminals/64d7e0b443d4d6f6fcaaf16da12242f7899a9509bf2233319b575c1592cc38e5");
   socket.onopen = runRealTerminal;
   socket.onclose = runFakeTerminal;
   socket.onerror = runFakeTerminal;
