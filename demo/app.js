@@ -1,4 +1,4 @@
-var http = require('http');
+var https = require('https');
 var express = require('express');
 var app = express();
 var expressWs = require('express-ws')(app);
@@ -38,8 +38,8 @@ var terminals = ''; //global terminals
 function getTerm(token) {
     return new Promise((resolve, reject) => {
       try {
-        return http.get({
-            host: 'api.greyatom.com',
+        return https.get({
+            host: 'api.commit.live',
             path: '/v1/users/' + token,
             headers: {'access-token': token}
         }, function(response) {
@@ -49,6 +49,7 @@ function getTerm(token) {
                 body += d;
             });
             response.on('end', function() {
+                console.log(body);
                 return resolve(JSON.parse(body));
             });
         });

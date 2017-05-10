@@ -71,6 +71,7 @@
   },
   "dependencies": {
     "cors": "^2.8.1",
+    "https": "^1.0.0",
     "node-pty": "^0.4.1"
   }
 }
