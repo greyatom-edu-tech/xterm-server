@@ -50,7 +50,12 @@ function getTerm(token) {
             });
             response.on('end', function() {
                 console.log(body);
-                return resolve(JSON.parse(body));
+                try {
+                    return resolve(JSON.parse(body));
+                } catch (err) {
+                    console.log('Parse failed');
+                    console.log(err);
+                }
             });
         });
       } catch (err) {
