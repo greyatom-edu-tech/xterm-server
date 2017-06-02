@@ -77,6 +77,8 @@ app.ws('/terminals/:pid', function (ws, req) {
       .then(user_info => {
         console.log(user_info);
         var pcwd = process.env.PWD;
+        console.log('i am here');
+        console.log(pcwd);
         if(cwds[req.params.pid]){
           pcwd = cwds[req.params.pid];
         }
@@ -88,7 +90,18 @@ app.ws('/terminals/:pid', function (ws, req) {
         });
 
         term.on('data', function(data) {
-          ws.send(data);
+          try {
+            ws.send(data);
+            var command = "lsof -a -p "+term.pid+" -d cwd -n | tail -1 | awk '{print $NF}'"
+            cmd.get(
+                command,
+                function(err, data, stderr){
+                    cwds[req.params.pid] = data.trim();
+                    process.kill(term.pid);
+                }
+            );
+          } catch (err) {
+          }
         });
 
         ws.on('message', function(msg) {
@@ -96,6 +109,7 @@ app.ws('/terminals/:pid', function (ws, req) {
         });
 
         ws.on('close', function () {
+          console.log('socket disconnecting');
           var command = "lsof -a -p "+term.pid+" -d cwd -n | tail -1 | awk '{print $NF}'"
           cmd.get(
               command,
