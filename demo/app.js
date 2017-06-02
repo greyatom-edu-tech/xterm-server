@@ -6,7 +6,8 @@ var pty = require('node-pty');
 var cors = require('cors');
 app.use(cors());
 app.options('*', cors());
-var terminals = ''; //global terminals
+var cwds = {}; 
+var cmd = require('node-cmd');
 
 /*
 ##########################################################
@@ -49,7 +50,7 @@ function getTerm(token) {
                 body += d;
             });
             response.on('end', function() {
-                console.log(body);
+                //console.log(body);
                 try {
                     return resolve(JSON.parse(body));
                 } catch (err) {
@@ -75,17 +76,16 @@ app.ws('/terminals/:pid', function (ws, req) {
     getTerm(req.params.pid)
       .then(user_info => {
         console.log(user_info);
-        if(terminals[req.params.pid]){
-          var term = terminals[req.params.pid];
-        }else {
-          // var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
-          var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
-            name: 'xterm-color',
-            cwd: process.env.PWD,
-            env: process.env
-          });
-          terminals[req.params.pid] = term;
+        var pcwd = process.env.PWD;
+        if(cwds[req.params.pid]){
+          pcwd = cwds[req.params.pid];
         }
+        // var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
+        var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
+          name: 'xterm-color',
+          cwd: pcwd,
+          env: process.env
+        });
 
         term.on('data', function(data) {
           ws.send(data);
@@ -96,9 +96,14 @@ app.ws('/terminals/:pid', function (ws, req) {
         });
 
         ws.on('close', function () {
-          // process.kill(term.pid);
-          // delete terminals[req.params.pid];
-          // delete logs[req.params.pid];
+          var command = "lsof -a -p "+term.pid+" -d cwd -n | tail -1 | awk '{print $NF}'"
+          cmd.get(
+              command,
+              function(err, data, stderr){
+                  cwds[req.params.pid] = data.trim();
+                  process.kill(term.pid);
+              }
+          );
         });
       })
       .catch(err => {
