@@ -97,7 +97,6 @@ app.ws('/terminals/:pid', function (ws, req) {
                 command,
                 function(err, data, stderr){
                     cwds[req.params.pid] = data.trim();
-                    process.kill(term.pid);
                 }
             );
           } catch (err) {
