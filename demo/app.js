@@ -6,8 +6,7 @@ var pty = require('node-pty');
 var cors = require('cors');
 app.use(cors());
 app.options('*', cors());
-var cwds = {}; 
-var cmd = require('node-cmd');
+
 
 /*
 ##########################################################
@@ -34,7 +33,7 @@ var cmd = require('node-cmd');
 */
 
 /*
-##########get user info and .pem file path###############
+##########get user info ###############
 */
 function getTerm(token) {
     return new Promise((resolve, reject) => {
@@ -50,9 +49,8 @@ function getTerm(token) {
                 body += d;
             });
             response.on('end', function() {
-                //console.log(body);
                 try {
-                    return resolve(JSON.parse(body));
+                  return resolve(JSON.parse(body));
                 } catch (err) {
                     console.log('Parse failed');
                     console.log(err);
@@ -76,13 +74,6 @@ app.ws('/terminals/:pid', function (ws, req) {
     getTerm(req.params.pid)
       .then(user_info => {
         console.log(user_info);
-        var pcwd = process.env.PWD;
-        console.log('i am here');
-        console.log(pcwd);
-        if(cwds[req.params.pid]){
-          pcwd = cwds[req.params.pid];
-        }
-        // var term = pty.spawn('ssh', ["-i", user_info.pem_file, user_info.user_host], {
         var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
           name: 'xterm-color',
           cwd: pcwd,
@@ -92,14 +83,8 @@ app.ws('/terminals/:pid', function (ws, req) {
         term.on('data', function(data) {
           try {
             ws.send(data);
-            var command = "lsof -a -p "+term.pid+" -d cwd -n | tail -1 | awk '{print $NF}'"
-            cmd.get(
-                command,
-                function(err, data, stderr){
-                    cwds[req.params.pid] = data.trim();
-                }
-            );
           } catch (err) {
+            console.log('socket was not available');
           }
         });
 
@@ -109,22 +94,15 @@ app.ws('/terminals/:pid', function (ws, req) {
 
         ws.on('close', function () {
           console.log('socket disconnecting');
-          var command = "lsof -a -p "+term.pid+" -d cwd -n | tail -1 | awk '{print $NF}'"
-          cmd.get(
-              command,
-              function(err, data, stderr){
-                  cwds[req.params.pid] = data.trim();
-                  try {
-                    process.kill(term.pid);
-                  } catch (err) {
-                  }
-                  
-              }
-          );
+          try {
+             process.kill(term.pid);
+           } catch (err) {
+             console.log('attemp to killing xterm process failed with pid '+ term.pid);
+           }
         });
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
       })
   } catch (err) {
       console.log('Terminal webSocket failed');
