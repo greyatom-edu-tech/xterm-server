@@ -83,11 +83,11 @@ app.ws('/terminals/:pid', function (ws, req) {
           console.log(pcwd);
         }
         //var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
-        pty.spawn('bash', ['-i', '-c', 'sudo su - ' + user_info.data.username],{
-          name: 'xterm-color',
-          cwd: pcwd,
-          env: process.env
-        });
+        var term pty.spawn('bash', ['-i', '-c', 'sudo su - ' + user_info.data.username],{
+                  name: 'xterm-color',
+                  cwd: pcwd,
+                  env: process.env
+                });
 
         term.on('data', function(data) {
           try {
