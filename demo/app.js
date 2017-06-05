@@ -18,14 +18,6 @@ app.options('*', cors());
   app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
   });
-
-  app.get('/style.css', function(req, res){
-    res.sendFile(__dirname + '/style.css');
-  });
-
-  app.get('/main.js', function(req, res){
-    res.sendFile(__dirname + '/main.js');
-  });
 /*
 ##########################################################
 ###################FOR TERMINAL DEMO ONLY ################
