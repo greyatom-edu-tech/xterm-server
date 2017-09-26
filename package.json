@@ -70,7 +70,8 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "cors": "^2.8.1",
+    "cors": "^2.8.4",
+    "http": "0.0.0",
     "https": "^1.0.0",
     "node-pty": "^0.4.1"
   }
