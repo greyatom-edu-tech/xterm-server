@@ -66,9 +66,7 @@ app.ws('/terminals/:user_id/:user_token', function (ws, req) {
   try {
     getTerm(req.params.user_id, req.params.token)
       .then(user_info => {
-        console.log(user_info);
-        // var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
-        var term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+        var term = pty.spawn('sudo', ['su','-',user_info.data.userName], {
           name: 'xterm-color',
           env: process.env
         });
