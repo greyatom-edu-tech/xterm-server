@@ -28,13 +28,13 @@ app.options('*', cors());
 /*
 ##########get user info ###############
 */
-function getTerm(token) {
+function getTerm(user_id,user_token) {
     return new Promise((resolve, reject) => {
       try {
-        return https.get({
+        return http.get({
             host: 'api.greyatom.com',
-            path: '/v1/users/' + token,
-            headers: {'access-token': token}
+            path: '/v2/users/' + user_id,
+            headers: {'Authorization': user_token}
         }, function(response) {
             // Continuously update stream with data
             var body = '';
@@ -62,12 +62,13 @@ function getTerm(token) {
 ##########xterm over WebSocket###############
 ##########Do not edit code below if you are not sure & know what you are doing ###############
 */
-app.ws('/terminals/:pid', function (ws, req) {
+app.ws('/terminals/:user_id/:user_token', function (ws, req) {
   try {
-    getTerm(req.params.pid)
+    getTerm(req.params.user_id, req.params.token)
       .then(user_info => {
         console.log(user_info);
-        var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
+        // var term = pty.spawn('sudo', ['su','-',user_info.data.username], {
+        var term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
           name: 'xterm-color',
           env: process.env
         });
