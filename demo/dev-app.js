@@ -64,7 +64,7 @@ function getTerm(user_id,user_token) {
 */
 app.ws('/terminals/:user_id/:user_token', function (ws, req) {
   try {
-    getTerm(req.params.user_id, req.params.token)
+    getTerm(req.params.user_id, req.params.user_token)
       .then(user_info => {
         var term = pty.spawn('sudo', ['su','-',user_info.data.userName], {
           name: 'xterm-color',
