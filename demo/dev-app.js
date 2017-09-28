@@ -1,4 +1,4 @@
-var https = require('http');
+var http = require('http');
 var express = require('express');
 var app = express();
 var expressWs = require('express-ws')(app);
