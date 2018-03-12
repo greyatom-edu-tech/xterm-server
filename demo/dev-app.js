@@ -32,7 +32,7 @@ function getTerm(user_id,user_token) {
     return new Promise((resolve, reject) => {
       try {
         return http.get({
-            host: 'api.greyatom.com',
+            host: 'develop.api.greyatom.com',
             path: '/v2/users/' + user_id,
             headers: {'Authorization': user_token}
         }, function(response) {
